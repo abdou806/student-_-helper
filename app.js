@@ -104,37 +104,7 @@ document.addEventListener('DOMContentLoaded', function () {
     taskForm.reset();
   });
 
-  // إضافة التنبيه عند وقت المهمة
-  const alertSound = document.createElement('audio');
-  alertSound.src = 'alert.mp3'; // تأكد من وجود ملف alert.mp3 في نفس المسار
-  alertSound.preload = 'auto';
-  document.body.appendChild(alertSound);
-
-  function checkTaskTimes() {
-    const now = new Date();
-
-    tasks.forEach((task) => {
-      const taskTime = new Date();
-      const [hours, minutes] = task.time.split(':');
-      taskTime.setHours(hours, minutes, 0, 0);
-
-      if (
-        now.getHours() === taskTime.getHours() &&
-        now.getMinutes() === taskTime.getMinutes()
-      ) {
-        alertSound.play();
-        if (Notification.permission === 'granted') {
-          new Notification('وقت المهمة!', {
-            body: `المهمة: ${task.title}\nالأولوية: ${task.priority}`,
-          });
-        }
-      }
     });
-  }
+  
 
-  if (Notification.permission !== 'granted') {
-    Notification.requestPermission();
-  }
-
-  setInterval(checkTaskTimes, 60000); // يفحص كل دقيقة
-});
+  
