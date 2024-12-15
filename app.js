@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
   const taskForm = document.getElementById('task-form');
   const taskList = document.getElementById('task-list');
-  const notificationContainer = document.getElementById('notification-container');
 
   // تحميل المهام المحفوظة من Local Storage
   const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
@@ -11,63 +10,49 @@ document.addEventListener('DOMContentLoaded', function () {
     localStorage.setItem('tasks', JSON.stringify(tasks));
   }
 
-  // دالة لإظهار إشعار
-  function showNotification(message) {
-    const notification = document.createElement('div');
-    notification.classList.add('notification');
-    notification.innerText = message;
-    notificationContainer.appendChild(notification);
+  // دالة لحساب الوقت المتبقي
+  function calculateTimeLeft(time) {
+    const taskTime = new Date(`1970-01-01T${time}:00Z`);
+    const currentTime = new Date();
+    const timeDiff = taskTime - currentTime;
 
-    // اختفاء الإشعار بعد 3 ثواني
-    setTimeout(() => {
-      notification.style.opacity = '0';
-      setTimeout(() => {
-        notification.remove();
-      }, 500);
-    }, 3000);
+    if (timeDiff <= 0) {
+      return "انتهت";
+    }
+
+    const hours = Math.floor(timeDiff / (1000 * 60 * 60));
+    const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+
+    return `${hours} ساعة و ${minutes} دقيقة`;
   }
 
   // دالة لإضافة مهمة إلى القائمة
   function addTaskToList(task) {
     const taskItem = document.createElement('li');
+    taskItem.setAttribute('data-priority', task.priority);
     taskItem.innerHTML = `
       <h3>${task.title} (${task.priority})</h3>
       <p>${task.desc}</p>
       <p>الوقت: ${task.time}</p>
       <p>التقدم: ${task.progress}%</p>
-      <p>الوقت المتبقي: <span class="time-remaining">${calculateTimeRemaining(task.time)}</span></p>
+      <p>الوقت المتبقي: ${calculateTimeLeft(task.time)}</p>
       <button class="delete-btn">حذف</button>
     `;
+    
+    // إذا كانت المهمة قد اقتربت من الانتهاء أو انتهت
+    const timeLeft = calculateTimeLeft(task.time);
+    if (timeLeft === "انتهت") {
+      taskItem.classList.add("notification");
+    }
+
     const deleteButton = taskItem.querySelector('.delete-btn');
     deleteButton.addEventListener('click', function () {
       tasks.splice(tasks.indexOf(task), 1);
       taskItem.remove();
       updateLocalStorage();
     });
+
     taskList.appendChild(taskItem);
-  }
-
-  // دالة لحساب الوقت المتبقي للمهمة
-  function calculateTimeRemaining(taskTime) {
-    const taskDate = new Date(`1970-01-01T${taskTime}:00`);
-    const now = new Date();
-    const diff = taskDate - now;
-    const hours = Math.floor(diff / (1000 * 60 * 60));
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    return `${hours} ساعة و ${minutes} دقيقة`;
-  }
-
-  // دالة للتحقق من المهام التي يجب تنبيه المستخدم عنها
-  function checkTaskTime() {
-    const now = new Date();
-    tasks.forEach(task => {
-      const taskTime = new Date(`1970-01-01T${task.time}:00`);
-      const timeDiff = taskTime - now;
-
-      if (timeDiff < 600000 && timeDiff > 0) {
-        showNotification(`الوقت المحدد لمهمة "${task.title}" اقترب.`);
-      }
-    });
   }
 
   // عرض المهام المحفوظة عند تحميل الصفحة
@@ -89,10 +74,6 @@ document.addEventListener('DOMContentLoaded', function () {
     addTaskToList(newTask);
     updateLocalStorage();
 
-    showNotification(`تم إضافة المهمة "${title}" بنجاح!`);
     taskForm.reset();
   });
-
-  // التحقق من الوقت كل دقيقة
-  setInterval(checkTaskTime, 60000); // التحقق كل دقيقة
 });
