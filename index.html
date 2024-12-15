@@ -1,163 +1,47 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <title>مدير المهام المُحسَّن</title>
-    <style>
-        /* إعدادات عامة */
-        :root {
-            --primary-color: #007bff;
-            --secondary-color: #28a745;
-            --text-color: #333;
-            --background-color: #f5f5f5;
-        }
-
-        body {
-            font-family: 'Cairo', sans-serif;
-            background-color: var(--background-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 0;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 30px;
-        }
-
-        /* شريط التنقل */
-        header {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 15px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            border-radius: 0 0 10px 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            margin: 0 10px;
-            transition: opacity 0.3s;
-        }
-
-        .nav-links a:hover {
-            opacity: 0.8;
-        }
-
-        /* نموذج المهام */
-        .task-form {
-            background-color: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .task-form input, 
-        .task-form textarea, 
-        .task-form select {
-            width: 100%;
-            margin: 10px 0;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-
-        /* بطاقات المهام */
-        .task-item {
-            background-color: white;
-            margin: 20px 0;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .task-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-
-        .task-item.priority-high {
-            border-right: 5px solid #dc3545;
-        }
-
-        .task-item.priority-medium {
-            border-right: 5px solid #ffc107;
-        }
-
-        .task-item.priority-low {
-            border-right: 5px solid var(--secondary-color);
-        }
-
-        /* أزرار التحكم */
-        button {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>موقع تبادل الملاحظات الدراسية</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="logo">TaskMaster</div>
-            <nav class="nav-links">
-                <a href="#">لوحة المتابعة</a>
-                <a href="#">المهام</a>
-                <a href="#">المشاريع</a>
-                <a href="#">الإحصائيات</a>
-            </nav>
-        </header>
+    <header>
+        <h1>موقع تبادل الملاحظات الدراسية</h1>
+        <input type="text" id="searchInput" placeholder="بحث عن الملاحظات..." oninput="filterNotes()">
+    </header>
 
-        <section class="task-form">
-            <h2>إضافة مهمة جديدة</h2>
-            <input type="text" id="task-title" placeholder="عنوان المهمة" required>
-            <textarea id="task-description" placeholder="وصف المهمة"></textarea>
-            
-            <div class="form-row">
-                <select id="task-priority">
-                    <option value="">حدد الأولوية</option>
-                    <option value="high">عالية</option>
-                    <option value="medium">متوسطة</option>
-                    <option value="low">منخفضة</option>
-                </select>
-                
-                <input type="datetime-local" id="task-deadline" required>
-            </div>
+    <section id="uploadSection">
+        <h2>رفع ملاحظاتك الدراسية</h2>
+        <form id="uploadForm">
+            <label for="subject">الموضوع:</label>
+            <input type="text" id="subject" placeholder="أدخل الموضوع" required>
 
-            <div class="form-row">
-                <select id="task-category">
-                    <option value="">اختر الفئة</option>
-                    <option value="school">مدرسي</option>
-                    <option value="work">عمل</option>
-                    <option value="personal">شخصي</option>
-                </select>
+            <label for="category">التصنيف:</label>
+            <select id="category" required>
+                <option value="رياضيات">رياضيات</option>
+                <option value="فيزياء">فيزياء</option>
+                <option value="أدب">أدب</option>
+                <option value="كيمياء">كيمياء</option>
+                <option value="معلوماتية">معلوماتية</option>
+            </select>
 
-                <button id="add-task-btn">إضافة المهمة</button>
-            </div>
-        </section>
+            <label for="file">اختر الملف:</label>
+            <input type="file" id="file" required>
 
-        <section id="tasks-container">
-            <!-- المهام ستتم إضافتها هنا -->
-        </section>
-    </div>
+            <label for="description">الوصف (اختياري):</label>
+            <textarea id="description" placeholder="أضف وصفًا للملاحظة" rows="4"></textarea>
 
-    <script src="app.js"></script>
+            <button type="submit">رفع الملاحظة</button>
+        </form>
+    </section>
+
+    <section id="notesSection">
+        <h2>الملاحظات الدراسية</h2>
+        <div id="notesList"></div>
+    </section>
+
+    <script src="script.js"></script>
 </body>
-             </html>
+</html>
