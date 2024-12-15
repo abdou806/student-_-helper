@@ -12,46 +12,39 @@ document.getElementById('uploadForm').addEventListener('submit', function(event)
         return;
     }
 
-    // إنشاء نموذج FormData لرفع الملف
-    const formData = new FormData();
-    formData.append('subject', subject);
-    formData.append('category', category);
-    formData.append('file', file);
-    formData.append('description', description);
+    // قراءة الملف
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const notes = JSON.parse(localStorage.getItem('notes') || '[]');
+        notes.push({
+            subject: subject,
+            category: category,
+            fileName: file.name,
+            fileUrl: e.target.result,  // حفظ الملف كـ Data URL
+            description: description,
+            comments: []  // إضافة تعليقات فارغة للملاحظة
+        });
 
-    // إرسال الطلب باستخدام AJAX
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', 'upload.php', true);  // هنا يجب تعديل رابط الخادم (مثل PHP أو Node.js)
-    xhr.onload = function() {
-        if (xhr.status === 200) {
-            alert('تم رفع الملاحظة بنجاح!');
-            loadNotes(); // تحميل الملاحظات المحدثة
-        } else {
-            alert('حدث خطأ أثناء رفع الملاحظة.');
-        }
+        localStorage.setItem('notes', JSON.stringify(notes));
+        alert('تم رفع الملاحظة بنجاح!');
+        loadNotes();
     };
-    xhr.send(formData);
+
+    reader.readAsDataURL(file);
 });
 
 // تحميل الملاحظات
 function loadNotes() {
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', 'notes.json', true);  // هذا الملف يمكن أن يكون JSON يتضمن جميع الملاحظات
-    xhr.onload = function() {
-        if (xhr.status === 200) {
-            const notes = JSON.parse(xhr.responseText);
-            displayNotes(notes);
-        }
-    };
-    xhr.send();
+    const notes = JSON.parse(localStorage.getItem('notes') || '[]');
+    displayNotes(notes);
 }
 
 // عرض الملاحظات
 function displayNotes(notes) {
     const notesList = document.getElementById('notesList');
-    notesList.innerHTML = ''; // مسح القائمة الحالية
+    notesList.innerHTML = '';
 
-    notes.forEach(note => {
+    notes.forEach((note, index) => {
         const noteDiv = document.createElement('div');
         noteDiv.classList.add('note');
         noteDiv.setAttribute('data-category', note.category.toLowerCase());
@@ -74,8 +67,58 @@ function displayNotes(notes) {
         downloadLink.textContent = 'تحميل الملف';
         noteDiv.appendChild(downloadLink);
 
+        // إضافة قسم التعليقات
+        const commentsSection = document.createElement('div');
+        commentsSection.classList.add('comments-section');
+
+        note.comments.forEach(comment => {
+            const commentDiv = document.createElement('p');
+            commentDiv.textContent = comment;
+            commentsSection.appendChild(commentDiv);
+        });
+
+        const commentInput = document.createElement('input');
+        commentInput.type = 'text';
+        commentInput.placeholder = 'أضف تعليقًا...';
+        const addCommentBtn = document.createElement('button');
+        addCommentBtn.textContent = 'إضافة تعليق';
+        addCommentBtn.onclick = function() {
+            addComment(index, commentInput.value);
+            commentInput.value = '';
+        };
+
+        commentsSection.appendChild(commentInput);
+        commentsSection.appendChild(addCommentBtn);
+        noteDiv.appendChild(commentsSection);
+
+        // زر الحذف
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = 'حذف الملاحظة';
+        deleteBtn.onclick = function() {
+            deleteNote(index);
+        };
+        noteDiv.appendChild(deleteBtn);
+
         notesList.appendChild(noteDiv);
     });
+}
+
+// إضافة تعليق للملاحظة
+function addComment(noteIndex, commentText) {
+    if (commentText.trim() === '') return;
+
+    const notes = JSON.parse(localStorage.getItem('notes'));
+    notes[noteIndex].comments.push(commentText);
+    localStorage.setItem('notes', JSON.stringify(notes));
+    loadNotes();
+}
+
+// حذف الملاحظة
+function deleteNote(noteIndex) {
+    const notes = JSON.parse(localStorage.getItem('notes'));
+    notes.splice(noteIndex, 1);
+    localStorage.setItem('notes', JSON.stringify(notes));
+    loadNotes();
 }
 
 // فلترة الملاحظات بناءً على البحث
