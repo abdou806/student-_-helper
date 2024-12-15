@@ -8,8 +8,6 @@
 </head>
 <body>
   <h1>إدارة المهام المدرسية</h1>
-  
-  <!-- نموذج إضافة المهمة -->
   <form id="task-form">
     <input type="text" id="task-title" placeholder="عنوان المهمة" required>
     <textarea id="task-desc" placeholder="وصف المهمة" required></textarea>
@@ -22,12 +20,7 @@
     <input type="number" id="task-progress" placeholder="النسبة المكتملة (%)" min="0" max="100" required>
     <button type="submit">إضافة المهمة</button>
   </form>
-
-  <!-- قائمة المهام -->
   <ul id="task-list"></ul>
-
-  <!-- الإشعارات -->
-  <div id="notification-container"></div>
 
   <script src="app.js"></script>
 </body>
