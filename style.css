@@ -1,20 +1,16 @@
-/* إعدادات الصفحة */
 body {
   font-family: Arial, sans-serif;
   margin: 20px;
   padding: 0;
   background-color: #f4f4f9;
-  color: #333;
 }
 
 h1 {
   text-align: center;
   color: #333;
-  font-size: 2.5em;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
-/* تصميم النموذج */
 form {
   margin-bottom: 20px;
   display: flex;
@@ -26,28 +22,20 @@ input, textarea, select, button {
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  font-size: 1rem;
 }
 
-/* تأثيرات الأزرار */
 button {
   background-color: #28a745;
   color: white;
   font-weight: bold;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease;
 }
 
 button:hover {
   background-color: #218838;
-  transform: scale(1.05);
 }
 
-button:active {
-  transform: scale(0.98);
-}
-
-/* تصميم قائمة المهام */
 ul {
   list-style: none;
   padding: 0;
@@ -56,17 +44,16 @@ ul {
 li {
   background: #fff;
   margin: 10px 0;
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
 }
 
 li:hover {
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  transform: scale(1.05);
 }
 
-/* تصميم زر الحذف */
 .delete-btn {
   background: #dc3545;
   color: white;
@@ -74,28 +61,32 @@ li:hover {
   padding: 5px 10px;
   border-radius: 3px;
   cursor: pointer;
-  font-size: 0.9rem;
 }
 
 .delete-btn:hover {
   background: #c82333;
 }
 
-/* تصميم الإشعار */
-#notification-container {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 1000;
+/* Priority styling */
+li[data-priority="عاجلة"] {
+  border-left: 5px solid red;
 }
 
+li[data-priority="مهمة"] {
+  border-left: 5px solid orange;
+}
+
+li[data-priority="عادية"] {
+  border-left: 5px solid green;
+}
+
+/* Notification Styling */
 .notification {
-  background-color: #28a745;
+  background-color: #f39c12;
   color: white;
-  padding: 10px 20px;
+  padding: 10px;
+  text-align: center;
+  margin: 10px 0;
   border-radius: 5px;
-  margin-bottom: 10px;
-  font-size: 1rem;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  transition: opacity 0.5s ease-out;
+  font-weight: bold;
   }
