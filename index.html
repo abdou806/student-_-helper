@@ -2,112 +2,162 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مدير المهام المتقدم</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>مدير المهام المُحسَّن</title>
+    <style>
+        /* إعدادات عامة */
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #28a745;
+            --text-color: #333;
+            --background-color: #f5f5f5;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        /* شريط التنقل */
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-radius: 0 0 10px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+            transition: opacity 0.3s;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        /* نموذج المهام */
+        .task-form {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .task-form input, 
+        .task-form textarea, 
+        .task-form select {
+            width: 100%;
+            margin: 10px 0;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        /* بطاقات المهام */
+        .task-item {
+            background-color: white;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .task-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .task-item.priority-high {
+            border-right: 5px solid #dc3545;
+        }
+
+        .task-item.priority-medium {
+            border-right: 5px solid #ffc107;
+        }
+
+        .task-item.priority-low {
+            border-right: 5px solid var(--secondary-color);
+        }
+
+        /* أزرار التحكم */
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <!-- شريط التنقل -->
-        <nav>
+        <header>
             <div class="logo">TaskMaster</div>
-            <div class="nav-links">
-                <a href="#" id="dashboard-link">لوحة المتابعة</a>
-                <a href="#" id="tasks-link">المهام</a>
-                <a href="#" id="projects-link">المشاريع</a>
-                <a href="#" id="stats-link">الإحصائيات</a>
+            <nav class="nav-links">
+                <a href="#">لوحة المتابعة</a>
+                <a href="#">المهام</a>
+                <a href="#">المشاريع</a>
+                <a href="#">الإحصائيات</a>
+            </nav>
+        </header>
+
+        <section class="task-form">
+            <h2>إضافة مهمة جديدة</h2>
+            <input type="text" id="task-title" placeholder="عنوان المهمة" required>
+            <textarea id="task-description" placeholder="وصف المهمة"></textarea>
+            
+            <div class="form-row">
+                <select id="task-priority">
+                    <option value="">حدد الأولوية</option>
+                    <option value="high">عالية</option>
+                    <option value="medium">متوسطة</option>
+                    <option value="low">منخفضة</option>
+                </select>
+                
+                <input type="datetime-local" id="task-deadline" required>
             </div>
-            <div class="user-profile">
-                <img src="user-avatar.png" alt="الملف الشخصي">
-                <span>أحمد محمد</span>
+
+            <div class="form-row">
+                <select id="task-category">
+                    <option value="">اختر الفئة</option>
+                    <option value="school">مدرسي</option>
+                    <option value="work">عمل</option>
+                    <option value="personal">شخصي</option>
+                </select>
+
+                <button id="add-task-btn">إضافة المهمة</button>
             </div>
-        </nav>
+        </section>
 
-        <!-- المحتوى الرئيسي -->
-        <main>
-            <!-- نموذج إضافة مهمة -->
-            <section id="task-form-section">
-                <div class="task-form">
-                    <h2>إضافة مهمة جديدة</h2>
-                    <input type="text" id="task-title" placeholder="عنوان المهمة" required>
-                    <textarea id="task-description" placeholder="وصف المهمة"></textarea>
-                    
-                    <div class="form-row">
-                        <select id="task-priority">
-                            <option value="">حدد الأولوية</option>
-                            <option value="high">عالية</option>
-                            <option value="medium">متوسطة</option>
-                            <option value="low">منخفضة</option>
-                        </select>
-                        
-                        <input type="datetime-local" id="task-deadline" required>
-                    </div>
-
-                    <div class="form-row">
-                        <select id="task-category">
-                            <option value="">اختر الفئة</option>
-                            <option value="school">مدرسي</option>
-                            <option value="work">عمل</option>
-                            <option value="personal">شخصي</option>
-                            <option value="health">صحة</option>
-                        </select>
-
-                        <select id="task-project" multiple>
-                            <option value="">المشروع (اختياري)</option>
-                            <!-- سيتم إضافة المشاريع ديناميكيًا -->
-                        </select>
-                    </div>
-
-                    <div class="tags-container">
-                        <input type="text" id="task-tags" placeholder="أضف وسوم (افصل بينها بفاصلة)">
-                    </div>
-
-                    <button id="add-task-btn">إضافة المهمة</button>
-                </div>
-            </section>
-
-            <!-- قائمة المهام -->
-            <section id="tasks-list-section">
-                <div class="tasks-header">
-                    <h2>المهام الحالية</h2>
-                    <div class="filter-options">
-                        <select id="filter-category">
-                            <option value="">كل الفئات</option>
-                            <option value="school">مدرسي</option>
-                            <option value="work">عمل</option>
-                            <option value="personal">شخصي</option>
-                        </select>
-                        <select id="filter-priority">
-                            <option value="">كل الأولويات</option>
-                            <option value="high">عالية</option>
-                            <option value="medium">متوسطة</option>
-                            <option value="low">منخفضة</option>
-                        </select>
-                    </div>
-                </div>
-                <div id="tasks-container"></div>
-            </section>
-        </main>
-
-        <!-- الإحصائيات والتحليلات -->
-        <section id="stats-section">
-            <div class="stats-grid">
-                <div class="stat-card" id="total-tasks">
-                    <h3>إجمالي المهام</h3>
-                    <span class="stat-number">0</span>
-                </div>
-                <div class="stat-card" id="completed-tasks">
-                    <h3>المهام المنجزة</h3>
-                    <span class="stat-number">0</span>
-                </div>
-                <div class="stat-card" id="pending-tasks">
-                    <h3>المهام المعلقة</h3>
-                    <span class="stat-number">0</span>
-                </div>
-            </div>
+        <section id="tasks-container">
+            <!-- المهام ستتم إضافتها هنا -->
         </section>
     </div>
 
     <script src="app.js"></script>
 </body>
-</html>
+             </html>
