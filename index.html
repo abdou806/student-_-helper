@@ -1,27 +1,113 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>إدارة المهام المدرسية</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مدير المهام المتقدم</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>إدارة المهام المدرسية</h1>
-  <form id="task-form">
-    <input type="text" id="task-title" placeholder="عنوان المهمة" required>
-    <textarea id="task-desc" placeholder="وصف المهمة" required></textarea>
-    <input type="time" id="task-time" required>
-    <select id="task-priority">
-      <option value="عادية">عادية</option>
-      <option value="مهمة">مهمة</option>
-      <option value="عاجلة">عاجلة</option>
-    </select>
-    <input type="number" id="task-progress" placeholder="النسبة المكتملة (%)" min="0" max="100" required>
-    <button type="submit">إضافة المهمة</button>
-  </form>
-  <ul id="task-list"></ul>
+    <div class="container">
+        <!-- شريط التنقل -->
+        <nav>
+            <div class="logo">TaskMaster</div>
+            <div class="nav-links">
+                <a href="#" id="dashboard-link">لوحة المتابعة</a>
+                <a href="#" id="tasks-link">المهام</a>
+                <a href="#" id="projects-link">المشاريع</a>
+                <a href="#" id="stats-link">الإحصائيات</a>
+            </div>
+            <div class="user-profile">
+                <img src="user-avatar.png" alt="الملف الشخصي">
+                <span>أحمد محمد</span>
+            </div>
+        </nav>
 
-  <script src="app.js"></script>
+        <!-- المحتوى الرئيسي -->
+        <main>
+            <!-- نموذج إضافة مهمة -->
+            <section id="task-form-section">
+                <div class="task-form">
+                    <h2>إضافة مهمة جديدة</h2>
+                    <input type="text" id="task-title" placeholder="عنوان المهمة" required>
+                    <textarea id="task-description" placeholder="وصف المهمة"></textarea>
+                    
+                    <div class="form-row">
+                        <select id="task-priority">
+                            <option value="">حدد الأولوية</option>
+                            <option value="high">عالية</option>
+                            <option value="medium">متوسطة</option>
+                            <option value="low">منخفضة</option>
+                        </select>
+                        
+                        <input type="datetime-local" id="task-deadline" required>
+                    </div>
+
+                    <div class="form-row">
+                        <select id="task-category">
+                            <option value="">اختر الفئة</option>
+                            <option value="school">مدرسي</option>
+                            <option value="work">عمل</option>
+                            <option value="personal">شخصي</option>
+                            <option value="health">صحة</option>
+                        </select>
+
+                        <select id="task-project" multiple>
+                            <option value="">المشروع (اختياري)</option>
+                            <!-- سيتم إضافة المشاريع ديناميكيًا -->
+                        </select>
+                    </div>
+
+                    <div class="tags-container">
+                        <input type="text" id="task-tags" placeholder="أضف وسوم (افصل بينها بفاصلة)">
+                    </div>
+
+                    <button id="add-task-btn">إضافة المهمة</button>
+                </div>
+            </section>
+
+            <!-- قائمة المهام -->
+            <section id="tasks-list-section">
+                <div class="tasks-header">
+                    <h2>المهام الحالية</h2>
+                    <div class="filter-options">
+                        <select id="filter-category">
+                            <option value="">كل الفئات</option>
+                            <option value="school">مدرسي</option>
+                            <option value="work">عمل</option>
+                            <option value="personal">شخصي</option>
+                        </select>
+                        <select id="filter-priority">
+                            <option value="">كل الأولويات</option>
+                            <option value="high">عالية</option>
+                            <option value="medium">متوسطة</option>
+                            <option value="low">منخفضة</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="tasks-container"></div>
+            </section>
+        </main>
+
+        <!-- الإحصائيات والتحليلات -->
+        <section id="stats-section">
+            <div class="stats-grid">
+                <div class="stat-card" id="total-tasks">
+                    <h3>إجمالي المهام</h3>
+                    <span class="stat-number">0</span>
+                </div>
+                <div class="stat-card" id="completed-tasks">
+                    <h3>المهام المنجزة</h3>
+                    <span class="stat-number">0</span>
+                </div>
+                <div class="stat-card" id="pending-tasks">
+                    <h3>المهام المعلقة</h3>
+                    <span class="stat-number">0</span>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="app.js"></script>
 </body>
 </html>
