@@ -76,11 +76,15 @@ button:hover {
 }
 
 .note button {
-    background-color: #008CBA;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
 }
 
 .note button:hover {
-    background-color: #007B9F;
+    background-color: #e53935;
 }
 
 #searchInput {
@@ -92,3 +96,17 @@ button:hover {
     font-size: 1em;
     margin-bottom: 20px;
 }
+
+textarea {
+    resize: vertical;
+}
+
+@media (max-width: 768px) {
+    #searchInput {
+        width: 100%;
+    }
+
+    #notesList {
+        flex-direction: column;
+    }
+    }
