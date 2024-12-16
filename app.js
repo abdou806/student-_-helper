@@ -1,3 +1,16 @@
+// إعداد Firebase
+const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT_ID.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+};
+
+const app = firebase.initializeApp(firebaseConfig);
+const storage = firebase.storage();
+
 // التعامل مع رفع الملاحظات
 document.getElementById('uploadForm').addEventListener('submit', function(event) {
     event.preventDefault();
@@ -12,25 +25,32 @@ document.getElementById('uploadForm').addEventListener('submit', function(event)
         return;
     }
 
-    // قراءة الملف
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        const notes = JSON.parse(localStorage.getItem('notes') || '[]');
-        notes.push({
-            subject: subject,
-            category: category,
-            fileName: file.name,
-            fileUrl: e.target.result,  // حفظ الملف كـ Data URL
-            description: description,
-            comments: []  // إضافة تعليقات فارغة للملاحظة
+    // رفع الملف إلى Firebase Storage
+    const storageRef = storage.ref('notes/' + file.name);
+    const uploadTask = storageRef.put(file);
+
+    uploadTask.on('state_changed', function(snapshot) {
+        // يمكن هنا إضافة تقدم التحميل
+    }, function(error) {
+        alert('حدث خطأ أثناء رفع الملف: ' + error.message);
+    }, function() {
+        uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+            // حفظ رابط التحميل في localStorage
+            const notes = JSON.parse(localStorage.getItem('notes') || '[]');
+            notes.push({
+                subject: subject,
+                category: category,
+                fileName: file.name,
+                fileUrl: downloadURL,  // حفظ الرابط الفعلي للملف
+                description: description,
+                comments: []  // إضافة تعليقات فارغة للملاحظة
+            });
+
+            localStorage.setItem('notes', JSON.stringify(notes));
+            alert('تم رفع الملاحظة بنجاح!');
+            loadNotes();
         });
-
-        localStorage.setItem('notes', JSON.stringify(notes));
-        alert('تم رفع الملاحظة بنجاح!');
-        loadNotes();
-    };
-
-    reader.readAsDataURL(file);
+    });
 });
 
 // تحميل الملاحظات
@@ -62,7 +82,7 @@ function displayNotes(notes) {
         noteDiv.appendChild(noteDescription);
 
         const downloadLink = document.createElement('a');
-        downloadLink.href = note.fileUrl;
+        downloadLink.href = note.fileUrl;  // الرابط من Firebase
         downloadLink.download = note.fileName;
         downloadLink.textContent = 'تحميل الملف';
         noteDiv.appendChild(downloadLink);
@@ -138,7 +158,4 @@ function filterNotes() {
     });
 }
 
-// تحميل الملاحظات عند تحميل الصفحة
-window.onload = function() {
-    loadNotes();
-};
+// تحميل
