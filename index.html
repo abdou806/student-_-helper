@@ -1,51 +1,65 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>موقع تبادل الملاحظات الدراسية</title>
-    <script src="https://www.gstatic.com/firebasejs/9.0.2/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.2/firebase-storage.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js"></script>
+    <title>Calcukator</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 </head>
 <body>
-    <header>
-        <h1>موقع تبادل الملاحظات الدراسية</h1>
-        <input type="text" id="searchInput" placeholder="بحث عن الملاحظات..." oninput="filterNotes()">
-    </header>
+    
 
-    <section id="uploadSection">
-        <h2>رفع ملاحظاتك الدراسية</h2>
-        <form id="uploadForm">
-            <label for="subject">الموضوع:</label>
-            <input type="text" id="subject" placeholder="أدخل الموضوع" required>
 
-            <label for="category">التصنيف:</label>
-            <select id="category" required>
-                <option value="asd">asd</option>
-                <option value="analyse">analyse</option>
-                <option value="algebre">algebre</option>
-                <option value="sm">sm</option>
-                <option value="i-se">i-se</option>
-                <option value="bw">bw</option>
-            </select>
 
-            <label for="file">اختر الملف:</label>
-            <input type="file" id="file" required>
+<div class="calculator">
+    <input type="text" id="screen" maxlength="20">
+    <div class="calc-buttons">
 
-            <label for="description">الوصف (اختياري):</label>
-            <textarea id="description" placeholder="أضف وصفًا للملاحظة" rows="4"></textarea>
+<div class="functions-one">
+<button class="button triggers">C</button>
+<button class="button basic-stuff">(</button>
+<button class="button basic-stuff">)</button>
+<button class="button numbers">7</button>
+<button class="button numbers">8</button>
+<button class="button numbers">9</button>
+<button class="button numbers">4</button>
+<button class="button numbers">5</button>
+<button class="button numbers">6</button>
+<button class="button numbers">1</button>
+<button class="button numbers">2</button>
+<button class="button numbers">3</button>
+<button class="button basic-stuff">±</button>
+<button class="button numbers">0</button>
+<button class="button basic-stuff">.</button>
+</div>
 
-            <button type="submit">رفع الملاحظة</button>
-        </form>
-    </section>
+<div class="functions-two">
+<button class="button triggers"><=</button>
+<button class="button complex-stuff">%</button>
+<button class="button complex-stuff">x !</button>
+<button class="button complex-stuff">x^</button>
+<button class="button basic-stuff">*</button>
+<button class="button basic-stuff">/</button>
+<button class="button complex-stuff">ln</button>
+<button class="button complex-stuff">e</button>
+<button class="button basic-stuff">+</button>
+<button class="button complex-stuff">x ²</button>
+<button class="button complex-stuff">log</button>
+<button class="button complex-stuff">cos</button>
+<button class="button basic-stuff">-</button>
+<button class="button complex-stuff">√</button>
+<button class="button complex-stuff">sin</button>
+<button class="button complex-stuff">tan</button>
+<button class="button triggers">=</button>
+<button class="button complex-stuff">π</button>
+<button class="button complex-stuff">∘</button>
+<button class="button complex-stuff">rad</button>
+</div>
+  </div>
+</div>
+<script src="script.js"></script>
 
-    <section id="notesSection">
-        <h2>الملاحظات الدراسية</h2>
-        <div id="notesList"></div>
-    </section>
-
-    <script src="script.js"></script>
 </body>
-                </html>
+</html>
