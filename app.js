@@ -18,7 +18,7 @@ taskForm.addEventListener('submit', function (e) {
 
     // Create a new list item
     const listItem = document.createElement('li');
-    listItem.textContent = `${taskName} - Due: ${taskDeadline}`;
+    listItem.innerHTML = `<span>${taskName}</span> <em>Due: ${taskDeadline}</em>`;
 
     // Append to the task list
     taskList.appendChild(listItem);
