@@ -1,112 +1,161 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+// إعداد Firebase
+const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT_ID.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+};
 
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
-    color: #333;
-    line-height: 1.6;
-    padding: 20px;
-}
+const app = firebase.initializeApp(firebaseConfig);
+const storage = firebase.storage();
 
-header {
-    text-align: center;
-    margin-bottom: 30px;
-}
+// التعامل مع رفع الملاحظات
+document.getElementById('uploadForm').addEventListener('submit', function(event) {
+    event.preventDefault();
 
-h1 {
-    font-size: 2em;
-}
+    const subject = document.getElementById('subject').value;
+    const category = document.getElementById('category').value;
+    const file = document.getElementById('file').files[0];
+    const description = document.getElementById('description').value;
 
-input, select, textarea {
-    width: 100%;
-    padding: 10px;
-    font-size: 1em;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #45a049;
-}
-
-#notesList {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-}
-
-.note {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    width: 300px;
-    margin-bottom: 20px;
-}
-
-.note h3 {
-    margin-bottom: 10px;
-}
-
-.note p {
-    margin-bottom: 10px;
-}
-
-.note a {
-    color: #4CAF50;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-.note a:hover {
-    text-decoration: underline;
-}
-
-.note button {
-    background-color: #f44336;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-}
-
-.note button:hover {
-    background-color: #e53935;
-}
-
-#searchInput {
-    padding: 10px;
-    width: 50%;
-    margin-top: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1em;
-    margin-bottom: 20px;
-}
-
-textarea {
-    resize: vertical;
-}
-
-@media (max-width: 768px) {
-    #searchInput {
-        width: 100%;
+    if (!file) {
+        alert('يرجى اختيار ملف لتحميله.');
+        return;
     }
 
-    #notesList {
-        flex-direction: column;
-    }
-    }
+    // رفع الملف إلى Firebase Storage
+    const storageRef = storage.ref('notes/' + file.name);
+    const uploadTask = storageRef.put(file);
+
+    uploadTask.on('state_changed', function(snapshot) {
+        // يمكن هنا إضافة تقدم التحميل
+    }, function(error) {
+        alert('حدث خطأ أثناء رفع الملف: ' + error.message);
+    }, function() {
+        uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+            // حفظ رابط التحميل في localStorage
+            const notes = JSON.parse(localStorage.getItem('notes') || '[]');
+            notes.push({
+                subject: subject,
+                category: category,
+                fileName: file.name,
+                fileUrl: downloadURL,  // حفظ الرابط الفعلي للملف
+                description: description,
+                comments: []  // إضافة تعليقات فارغة للملاحظة
+            });
+
+            localStorage.setItem('notes', JSON.stringify(notes));
+            alert('تم رفع الملاحظة بنجاح!');
+            loadNotes();
+        });
+    });
+});
+
+// تحميل الملاحظات
+function loadNotes() {
+    const notes = JSON.parse(localStorage.getItem('notes') || '[]');
+    displayNotes(notes);
+}
+
+// عرض الملاحظات
+function displayNotes(notes) {
+    const notesList = document.getElementById('notesList');
+    notesList.innerHTML = '';
+
+    notes.forEach((note, index) => {
+        const noteDiv = document.createElement('div');
+        noteDiv.classList.add('note');
+        noteDiv.setAttribute('data-category', note.category.toLowerCase());
+
+        const noteTitle = document.createElement('h3');
+        noteTitle.textContent = note.subject;
+        noteDiv.appendChild(noteTitle);
+
+        const noteCategory = document.createElement('p');
+        noteCategory.textContent = `التصنيف: ${note.category}`;
+        noteDiv.appendChild(noteCategory);
+
+        const noteDescription = document.createElement('p');
+        noteDescription.textContent = note.description || 'لا يوجد وصف للملاحظة.';
+        noteDiv.appendChild(noteDescription);
+
+        const downloadLink = document.createElement('a');
+        downloadLink.href = note.fileUrl;  // الرابط من Firebase
+        downloadLink.download = note.fileName;
+        downloadLink.textContent = 'تحميل الملف';
+        noteDiv.appendChild(downloadLink);
+
+        // إضافة قسم التعليقات
+        const commentsSection = document.createElement('div');
+        commentsSection.classList.add('comments-section');
+
+        note.comments.forEach(comment => {
+            const commentDiv = document.createElement('p');
+            commentDiv.textContent = comment;
+            commentsSection.appendChild(commentDiv);
+        });
+
+        const commentInput = document.createElement('input');
+        commentInput.type = 'text';
+        commentInput.placeholder = 'أضف تعليقًا...';
+        const addCommentBtn = document.createElement('button');
+        addCommentBtn.textContent = 'إضافة تعليق';
+        addCommentBtn.onclick = function() {
+            addComment(index, commentInput.value);
+            commentInput.value = '';
+        };
+
+        commentsSection.appendChild(commentInput);
+        commentsSection.appendChild(addCommentBtn);
+        noteDiv.appendChild(commentsSection);
+
+        // زر الحذف
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = 'حذف الملاحظة';
+        deleteBtn.onclick = function() {
+            deleteNote(index);
+        };
+        noteDiv.appendChild(deleteBtn);
+
+        notesList.appendChild(noteDiv);
+    });
+}
+
+// إضافة تعليق للملاحظة
+function addComment(noteIndex, commentText) {
+    if (commentText.trim() === '') return;
+
+    const notes = JSON.parse(localStorage.getItem('notes'));
+    notes[noteIndex].comments.push(commentText);
+    localStorage.setItem('notes', JSON.stringify(notes));
+    loadNotes();
+}
+
+// حذف الملاحظة
+function deleteNote(noteIndex) {
+    const notes = JSON.parse(localStorage.getItem('notes'));
+    notes.splice(noteIndex, 1);
+    localStorage.setItem('notes', JSON.stringify(notes));
+    loadNotes();
+}
+
+// فلترة الملاحظات بناءً على البحث
+function filterNotes() {
+    const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+    const notes = document.querySelectorAll('.note');
+
+    notes.forEach(note => {
+        const noteTitle = note.querySelector('h3').textContent.toLowerCase();
+        const noteCategory = note.getAttribute('data-category').toLowerCase();
+
+        if (noteTitle.includes(searchQuery) || noteCategory.includes(searchQuery)) {
+            note.style.display = 'block';
+        } else {
+            note.style.display = 'none';
+        }
+    });
+}
+
+// تحميل
