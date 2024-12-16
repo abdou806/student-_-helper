@@ -1,75 +1,28 @@
-// إعداد Firebase
-const firebaseConfig = {
-    apiKey: "YOUR_API_KEY", // استبدل بمفتاحك
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
-};
+// Get references to DOM elements
+const taskForm = document.getElementById('task-form');
+const taskList = document.getElementById('task-list');
 
-firebase.initializeApp(firebaseConfig);
-const storage = firebase.storage();
+// Add event listener to the form
+taskForm.addEventListener('submit', function (e) {
+    e.preventDefault();
 
-// التعامل مع رفع الملاحظات
-document.getElementById('uploadForm').addEventListener('submit', function(event) {
-    event.preventDefault();
+    // Get task details
+    const taskName = document.getElementById('task-name').value;
+    const taskDeadline = document.getElementById('task-deadline').value;
 
-    const subject = document.getElementById('subject').value;
-    const category = document.getElementById('category').value;
-    const file = document.getElementById('file').files[0];
-    const description = document.getElementById('description').value;
-
-    if (!file) {
-        alert('يرجى اختيار ملف لتحميله.');
+    // Validate input
+    if (taskName.trim() === '' || taskDeadline.trim() === '') {
+        alert('Please fill in all fields.');
         return;
     }
 
-    // رفع الملف إلى Firebase Storage
-    const storageRef = storage.ref('notes/' + file.name);
-    storageRef.put(file).then(snapshot => {
-        return snapshot.ref.getDownloadURL();
-    }).then(downloadURL => {
-        // حفظ الملاحظة في localStorage
-        const notes = JSON.parse(localStorage.getItem('notes') || '[]');
-        notes.push({
-            subject: subject,
-            category: category,
-            fileName: file.name,
-            fileUrl: downloadURL,
-            description: description
-        });
-        localStorage.setItem('notes', JSON.stringify(notes));
+    // Create a new list item
+    const listItem = document.createElement('li');
+    listItem.textContent = `${taskName} - Due: ${taskDeadline}`;
 
-        alert('تم رفع الملاحظة بنجاح!');
-        loadNotes();
-    }).catch(error => {
-        console.error('Error uploading file:', error.message);
-        alert('حدث خطأ أثناء رفع الملف.');
-    });
+    // Append to the task list
+    taskList.appendChild(listItem);
+
+    // Clear the form fields
+    taskForm.reset();
 });
-
-// تحميل الملاحظات وعرضها
-function loadNotes() {
-    const notes = JSON.parse(localStorage.getItem('notes') || '[]');
-    const notesList = document.getElementById('notesList');
-    notesList.innerHTML = '';
-
-    notes.forEach(note => {
-        const noteDiv = document.createElement('div');
-        noteDiv.className = 'note';
-
-        noteDiv.innerHTML = `
-            <h3>الموضوع: ${note.subject}</h3>
-            <p>التصنيف: ${note.category}</p>
-            <p>الوصف: ${note.description || 'لا يوجد وصف.'}</p>
-            <a href="${note.fileUrl}" target="_blank">تحميل الملف: ${note.fileName}</a>
-            <hr>
-        `;
-
-        notesList.appendChild(noteDiv);
-    });
-}
-
-// تحميل الملاحظات عند فتح الصفحة
-window.onload = loadNotes;
