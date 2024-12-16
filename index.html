@@ -2,64 +2,42 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calcukator</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <title>Student Help Page</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    
+    <header>
+        <h1>Student Help Portal</h1>
+        <p>Your go-to platform for assignments and resources</p>
+    </header>
 
+    <main>
+        <section id="tasks">
+            <h2>Current Tasks</h2>
+            <ul id="task-list">
+                <!-- Tasks will be populated here dynamically -->
+            </ul>
+        </section>
 
+        <section id="add-task">
+            <h2>Add a New Task</h2>
+            <form id="task-form">
+                <label for="task-name">Task Name:</label>
+                <input type="text" id="task-name" placeholder="Enter task name" required>
 
-<div class="calculator">
-    <input type="text" id="screen" maxlength="20">
-    <div class="calc-buttons">
+                <label for="task-deadline">Deadline:</label>
+                <input type="date" id="task-deadline" required>
 
-<div class="functions-one">
-<button class="button triggers">C</button>
-<button class="button basic-stuff">(</button>
-<button class="button basic-stuff">)</button>
-<button class="button numbers">7</button>
-<button class="button numbers">8</button>
-<button class="button numbers">9</button>
-<button class="button numbers">4</button>
-<button class="button numbers">5</button>
-<button class="button numbers">6</button>
-<button class="button numbers">1</button>
-<button class="button numbers">2</button>
-<button class="button numbers">3</button>
-<button class="button basic-stuff">±</button>
-<button class="button numbers">0</button>
-<button class="button basic-stuff">.</button>
-</div>
+                <button type="submit">Add Task</button>
+            </form>
+        </section>
+    </main>
 
-<div class="functions-two">
-<button class="button triggers"><=</button>
-<button class="button complex-stuff">%</button>
-<button class="button complex-stuff">x !</button>
-<button class="button complex-stuff">x^</button>
-<button class="button basic-stuff">*</button>
-<button class="button basic-stuff">/</button>
-<button class="button complex-stuff">ln</button>
-<button class="button complex-stuff">e</button>
-<button class="button basic-stuff">+</button>
-<button class="button complex-stuff">x ²</button>
-<button class="button complex-stuff">log</button>
-<button class="button complex-stuff">cos</button>
-<button class="button basic-stuff">-</button>
-<button class="button complex-stuff">√</button>
-<button class="button complex-stuff">sin</button>
-<button class="button complex-stuff">tan</button>
-<button class="button triggers">=</button>
-<button class="button complex-stuff">π</button>
-<button class="button complex-stuff">∘</button>
-<button class="button complex-stuff">rad</button>
-</div>
-  </div>
-</div>
-<script src="script.js"></script>
+    <footer>
+        <p>&copy; 2024 Student Help Portal. All rights reserved.</p>
+    </footer>
 
+    <script src="script.js"></script>
 </body>
 </html>
